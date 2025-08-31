@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>chezs velocity fixes super cool</title>
+  <meta name="color-scheme" content="dark" />
+  <style>
+    :root{
+      --bg:#000;
+      --panel:#0f0f0f;
+      --panel-2:#151515;
+      --line:#262626;
+      --text:#e6e6e6;
+      --radius:16px;
+      --shadow:0 8px 30px rgba(0,0,0,.65);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font:14px/1.5 system-ui,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+    header{padding:14px 20px;border-bottom:1px solid var(--line);background:var(--panel);text-align:center}
+    h1{font-size:18px;text-transform:lowercase}
+    .search{margin:12px auto;max-width:500px;width:100%}
+    .search input{width:100%;padding:12px 14px;border-radius:var(--radius);border:1px solid var(--line);background:var(--panel-2);color:var(--text);outline:none;transition:.2s}
+    .search input:focus{box-shadow:0 0 0 2px rgba(255,255,255,.1)}
+    main{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;width:100%;max-width:1000px}
+    .card{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);cursor:pointer;overflow:hidden;transform:scale(1);transition:transform .25s,background .25s}
+    .card:hover{background:#1a1a1a;transform:scale(1.02)}
+    .card .head{padding:12px;font-weight:700;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05)}
+    .card .body{padding:12px;color:#cfcfcf;white-space:pre-wrap;line-height:1.4}
+    .empty{text-align:center;margin-top:50px;color:#777}
+    /* Fullscreen mode */
+    .fullscreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--panel-2);z-index:100;display:flex;flex-direction:column;animation:fadeIn .3s ease forwards}
+    .fullscreen .head{font-size:18px;padding:20px;border-bottom:1px solid var(--line)}
+    .fullscreen .body{flex:1;overflow:auto;padding:20px;font-size:15px}
+    .closeBtn{align-self:flex-end;margin:10px 20px;background:#111;border:1px solid var(--line);color:var(--text);padding:6px 12px;border-radius:8px;cursor:pointer;transition:.2s}
+    .closeBtn:hover{background:#1f1f1f}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    a{color:#9e9e9e;text-decoration:underline}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>chezs velocity fixes</h1>
+    <div class="search">
+      <input id="q" type="search" placeholder="search fixes…" autocomplete="off" />
+    </div>
+  </header>
+
+  <main>
+    <div id="grid" class="grid"></div>
+    <div id="empty" class="empty" hidden>no results</div>
+  </main>
+
+  <script>
+    const fixes=[
+      {name:"fps drop after injection",fix:"there isnt a fix for this cro that js how it is"},
+      {name:"velocity doesnt open",fix:"Download .net 8 sdks",link:"https://dotnet.microsoft.com/en-us/download/dotnet/8.0"},
+      {name:"roblox crash",fix:"Go to rdd.weao.xyz Click Download Latest Version Use the RobloxPlayerBeta as your primary Roblox when exploiting.",link:"https://rdd.weao.xyz"},
+      {name:"f11 makes screen black",fix:"press CTRL+ALT+DEL then press cancel while in fullscreen"},
+      {name:"inactive client",fix:"THIS IS NORMAL click on the square next to the client then press inject,inactive means it hasnt injected"},
+      {name:"cant select client",fix:"yes you can,the color of the selection box slightly changes,it doesnt glow green dumbass"},
+      {name:"other",fix:"if you have any other problems go to the velocity server and open the support faq area (this is a basic site which has fixes FROM there)"}
+    ];
+
+    const grid=document.getElementById('grid');
+    const empty=document.getElementById('empty');
+    const q=document.getElementById('q');
+
+    function makeCard(item){
+      const el=document.createElement('article');
+      el.className='card';
+      el.innerHTML=`<div class="head">${escapeHTML(item.name)}</div><div class="body">${linkify(item.fix)}</div>`;
+      el.addEventListener('click',()=>openFullscreen(item));
+      return el;
+    }
+
+    function render(list){
+      grid.replaceChildren(...list.map(makeCard));
+      empty.hidden=list.length!==0;
+    }
+
+    function escapeHTML(s){
+      return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;','\'':'&#39;'}[c]));
+    }
+
+    function linkify(text){
+      return text.replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank">$1</a>');
+    }
+
+    function openFullscreen(item){
+      const fs=document.createElement('div');
+      fs.className='fullscreen';
+      fs.innerHTML=`<button class="closeBtn">close</button><div class="head">${escapeHTML(item.name)}</div><div class="body">${linkify(item.fix)}</div>`;
+      fs.querySelector('.closeBtn').addEventListener('click',()=>fs.remove());
+      document.body.appendChild(fs);
+    }
+
+    function filter(query){
+      const s=query.trim().toLowerCase();
+      if(!s)return fixes;
+      return fixes.filter(({name,fix})=>name.toLowerCase().includes(s)||fix.toLowerCase().includes(s));
+    }
+
+    q.addEventListener('input',()=>render(filter(q.value)));
+    window.addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement!==q){e.preventDefault();q.focus();}if(e.key==='Escape'){q.value='';render(fixes);q.blur();}});
+
+    render(fixes);
+  </script>
+</body>
+</html>
