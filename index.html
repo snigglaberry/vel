@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>chezs velocity fixes super cool</title>
+  <title>chezs velocity fixes</title>
   <meta name="color-scheme" content="dark" />
   <style>
     :root{
@@ -28,11 +28,15 @@
     .card:hover{background:#1a1a1a;transform:scale(1.02)}
     .card .head{padding:12px;font-weight:700;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05)}
     .card .body{padding:12px;color:#cfcfcf;white-space:pre-wrap;line-height:1.4}
+    .card .linkBtn{display:block;margin:0 12px 12px 12px;padding:6px 10px;background:#111;border:1px solid var(--line);color:var(--text);border-radius:8px;text-align:center;text-decoration:none;transition:.2s}
+    .card .linkBtn:hover{background:#1f1f1f}
     .empty{text-align:center;margin-top:50px;color:#777}
     /* Fullscreen mode */
     .fullscreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--panel-2);z-index:100;display:flex;flex-direction:column;animation:fadeIn .3s ease forwards}
     .fullscreen .head{font-size:18px;padding:20px;border-bottom:1px solid var(--line)}
     .fullscreen .body{flex:1;overflow:auto;padding:20px;font-size:15px}
+    .fullscreen .linkBtn{margin:20px auto;background:#111;border:1px solid var(--line);color:var(--text);padding:8px 14px;border-radius:8px;text-decoration:none;transition:.2s}
+    .fullscreen .linkBtn:hover{background:#1f1f1f}
     .closeBtn{align-self:flex-end;margin:10px 20px;background:#111;border:1px solid var(--line);color:var(--text);padding:6px 12px;border-radius:8px;cursor:pointer;transition:.2s}
     .closeBtn:hover{background:#1f1f1f}
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -54,13 +58,11 @@
 
   <script>
     const fixes=[
-      {name:"fps drop after injection",fix:"there isnt a fix for this cro that js how it is"},
-      {name:"velocity doesnt open",fix:"Download .net 8 sdks",link:"https://dotnet.microsoft.com/en-us/download/dotnet/8.0"},
-      {name:"roblox crash",fix:"Go to rdd.weao.xyz Click Download Latest Version Use the RobloxPlayerBeta as your primary Roblox when exploiting.",link:"https://rdd.weao.xyz"},
-      {name:"f11 makes screen black",fix:"press CTRL+ALT+DEL then press cancel while in fullscreen"},
-      {name:"inactive client",fix:"THIS IS NORMAL click on the square next to the client then press inject,inactive means it hasnt injected"},
-      {name:"cant select client",fix:"yes you can,the color of the selection box slightly changes,it doesnt glow green dumbass"},
-      {name:"other",fix:"if you have any other problems go to the velocity server and open the support faq area (this is a basic site which has fixes FROM there)"}
+      {name:"fps drop after update",fix:"turn off vsync in settings → restart client\nclose overlays (discord, geforce)\nset graphics to manual and test levels"},
+      {name:"crash on launch",fix:"verify game files, then reboot\nclear temp cache; remove old plugins\nmake sure GPU driver is current"},
+      {name:"network rubberbanding",fix:"switch to wired if possible\nflush dns and reboot router\nlimit background downloads",link:"https://speedtest.net"},
+      {name:"mouse input delay",fix:"disable windows mouse accel\nset raw input on\ncap fps slightly below max"},
+      {name:"stutter when recording",fix:"record at constant framerate\nreduce capture resolution\nuse a separate drive for recordings"}
     ];
 
     const grid=document.getElementById('grid');
@@ -71,6 +73,14 @@
       const el=document.createElement('article');
       el.className='card';
       el.innerHTML=`<div class="head">${escapeHTML(item.name)}</div><div class="body">${linkify(item.fix)}</div>`;
+      if(item.link){
+        const btn=document.createElement('a');
+        btn.href=item.link;
+        btn.target="_blank";
+        btn.className='linkBtn';
+        btn.textContent='View Link';
+        el.appendChild(btn);
+      }
       el.addEventListener('click',()=>openFullscreen(item));
       return el;
     }
@@ -92,6 +102,14 @@
       const fs=document.createElement('div');
       fs.className='fullscreen';
       fs.innerHTML=`<button class="closeBtn">close</button><div class="head">${escapeHTML(item.name)}</div><div class="body">${linkify(item.fix)}</div>`;
+      if(item.link){
+        const linkBtn=document.createElement('a');
+        linkBtn.href=item.link;
+        linkBtn.target="_blank";
+        linkBtn.className='linkBtn';
+        linkBtn.textContent='Open Link';
+        fs.appendChild(linkBtn);
+      }
       fs.querySelector('.closeBtn').addEventListener('click',()=>fs.remove());
       document.body.appendChild(fs);
     }
